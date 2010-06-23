@@ -106,16 +106,16 @@ function parseLine($line)
         $resp = array(
             'line'     => $whole_match,
             'host'     => $remote_host,
-            'log'      => $logname,
-            'user'     => $user,
+            // 'log'      => $logname,
+            // 'user'     => $user,
             'time'     => $time,
             'method'   => $method,
             'request'  => $request,
-            'protocol' => $protocol,
+            // 'protocol' => $protocol,
             'status'   => $status,
-            'bytes'    => $bytes,
-            'referer'  => $referer,
-            'agent'    => $user_agent,
+            // 'bytes'    => $bytes,
+            // 'referer'  => $referer,
+            // 'agent'    => $user_agent,
         );
 
         $resp['time'] = substr($time, 1, -1);
