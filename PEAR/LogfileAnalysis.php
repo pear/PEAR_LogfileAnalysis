@@ -20,7 +20,7 @@ class PEAR_LogfileAnalysis
      */
     public static function organize()
     {
-        $compressedExt = array('gz', 'bz2');
+        static $compressedExt = array('gz', 'bz2');
 
         foreach ($compressedExt as $ext) {
 
@@ -164,7 +164,8 @@ class PEAR_LogfileAnalysis
     protected static function parseTime($timeStr)
     {
         $timeStr = substr($timeStr, 1, -1);
-        $format  = '%e/%b/%Y:%H:%M:%S %z';
+
+        static $format  = '%e/%b/%Y:%H:%M:%S %z';
 
         $date = strptime($timeStr, $format);
 
@@ -175,6 +176,10 @@ class PEAR_LogfileAnalysis
             'hour'  => $date['tm_hour'],
             'min'   => $date['tm_min'],
         );
+
+        unset($date);
+        unset($timeStr);
+
         return $parsed;
     }
 
@@ -217,6 +222,11 @@ class PEAR_LogfileAnalysis
 
             echo "\tDocument: {$id}, ";
             echo "Response: " . $resp->getStatus() . "\n";
+
+            unset($resp);
+            unset($obj);
+            unset($data);
+            unset($id);
 
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
