@@ -13,7 +13,6 @@ if ($start !== null) {
 }
 
 $logFiles = PEAR_LogfileAnalysis::globr(__DIR__ . '/*');
-sort($logFiles);
 
 $startAt = false;
 foreach ($logFiles as $log) {
@@ -51,8 +50,8 @@ foreach ($logFiles as $log) {
         if ($doc === false) {
             continue;
         }
-        PEAR_LogfileAnalysis::sendToCouchDB($doc);
-        sleep(1);
+        PEAR_LogfileAnalysis::sendToCouchDB($doc, $prettyLog);
+        usleep(500000);
 
         unset($line);
         unset($doc);

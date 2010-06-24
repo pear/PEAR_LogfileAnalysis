@@ -63,6 +63,7 @@ class PEAR_LogfileAnalysis
                 'config.ini-dist',
                 basename(__FILE__),
                 'process.php',
+                'README.md',
                 '..',
                 '.',
             );
@@ -190,7 +191,7 @@ class PEAR_LogfileAnalysis
      *
      * @return void
      */
-    public static function sendToCouchDb(array $data)
+    public static function sendToCouchDb(array $data, $file)
     {
         static $config;
         if ($config === null) {
@@ -220,8 +221,14 @@ class PEAR_LogfileAnalysis
 
             $resp = $req->send();
 
-            echo "\tDocument: {$id}, ";
-            echo "Response: " . $resp->getStatus() . "\n";
+            echo "\tDocument: {$id} (file: {$file}), ";
+            echo "Response: " . $resp->getStatus();
+
+            if ($resp->getStatus() == 409) {
+                echo " [duplicate]";
+            }
+
+            echo "\n";
 
             unset($resp);
             unset($obj);
