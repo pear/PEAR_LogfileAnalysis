@@ -51,7 +51,7 @@ foreach ($logFiles as $log) {
             continue;
         }
         PEAR_LogfileAnalysis::sendToCouchDB($doc, $prettyLog);
-        usleep(500000);
+        // usleep(500000);
 
         unset($line);
         unset($doc);
