@@ -36,24 +36,28 @@ foreach ($logFiles as $log) {
         continue;
     }
 
-    $data  = file_get_contents($log);
-    $lines = explode("\n", $data);
-
     echo "Currently crunching: {$prettyLog}\n";
 
-    foreach ($lines as $line) {
-        $data = PEAR_LogfileAnalysis::parseLine($line);
-        if ($data === false) {
+    $handle = @fopen($log, 'r');
+    if (!$handle) {
+        echo "Could not open {$prettyLog}\n";
+        continue;
+    }
+
+    while (!feof($handle)) {
+        $line = fgets($handle);
+
+        $doc = PEAR_LogfileAnalysis::parseLine($line);
+        if ($doc === false) {
             continue;
         }
-        PEAR_LogfileAnalysis::sendToCouchDB($data);
+        PEAR_LogfileAnalysis::sendToCouchDB($doc);
         sleep(1);
 
         unset($line);
+        unset($doc);
     }
 
-    unset($lines);
-    unset($data);
     unset($prettyLog);
 
     echo "\t" . round((memory_get_usage(true)/1024/1024), 2) . "MB\n";
