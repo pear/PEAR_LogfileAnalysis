@@ -43,18 +43,22 @@ foreach ($logFiles as $log) {
         continue;
     }
 
+    $lineCount = 1;
     while (!feof($handle)) {
         $line = fgets($handle);
 
         $doc = PEAR_LogfileAnalysis::parseLine($line);
         if ($doc === false) {
+            $lineCount++;
             continue;
         }
-        PEAR_LogfileAnalysis::sendToCouchDB($doc, $prettyLog);
+        PEAR_LogfileAnalysis::sendToCouchDB($doc, $prettyLog, $lineCount);
         // usleep(500000);
 
         unset($line);
         unset($doc);
+
+        $lineCount++;
     }
 
     unset($prettyLog);

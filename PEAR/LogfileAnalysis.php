@@ -189,11 +189,13 @@ class PEAR_LogfileAnalysis
     /**
      * Send data to CouchDB.
      *
-     * @param array $data The object/document.
+     * @param array  $data  The object/document.
+     * @param string $file  The filename of the log currently being crunched.
+     * @param int    $count Which line are we at?
      *
      * @return void
      */
-    public static function sendToCouchDb(array $data, $file)
+    public static function sendToCouchDb(array $data, $file, $count)
     {
         static $config;
         if ($config === null) {
@@ -223,7 +225,7 @@ class PEAR_LogfileAnalysis
 
             $resp = $req->send();
 
-            echo "\tDocument: {$id} (file: {$file}), ";
+            echo "\tDocument: {$id} (file: {$file}, line: {$count}), ";
             echo "Response: " . $resp->getStatus();
 
             if ($resp->getStatus() == 409) {
