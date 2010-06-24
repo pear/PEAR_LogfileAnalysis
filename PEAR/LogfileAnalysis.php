@@ -64,6 +64,8 @@ class PEAR_LogfileAnalysis
                 basename(__FILE__),
                 'process.php',
                 'README.md',
+                '.git',
+                '.gitignore',
                 '..',
                 '.',
             );
