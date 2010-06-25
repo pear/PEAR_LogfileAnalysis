@@ -11,6 +11,11 @@ require_once __DIR__ . '/PEAR/LogfileAnalysis.php';
 
 PEAR_LogfileAnalysis::init(); // pseudo __construct()
 
+/**
+ * @desc Argument parsing! Primarily to be able to resume the crunching.
+ *       Example: ./process.php /logfile lineno
+ *       Both arguments are optional and are only used when supplied.
+ */
 $start = null;
 if (isset($argv[1])) {
     $start = $argv[1];
