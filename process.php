@@ -7,9 +7,18 @@
  * @license
  * @link     http://github.com/pear/PEAR_LogfileAnalysis
  */
+
+/**
+ * @namespace
+ */
+namespace PEAR;
+
+/**
+ * @desc Include \PEAR\LogfileAnalysis
+ */
 require_once __DIR__ . '/PEAR/LogfileAnalysis.php';
 
-PEAR_LogfileAnalysis::init(); // pseudo __construct()
+LogfileAnalysis::init(); // pseudo __construct()
 
 /**
  * @desc Argument parsing! Primarily to be able to resume the crunching.
@@ -29,10 +38,12 @@ if (isset($argv[2])) {
     $lineNo = (int) $argv[2];
     if (empty($lineNo)) {
         $lineNo = false;
+    } else {
+        echo "\n\tResuming at line: {$lineNo} in {$start}\n\n";
     }
 }
 
-$logFiles = PEAR_LogfileAnalysis::globr(__DIR__ . '/*');
+$logFiles = LogfileAnalysis::globr(__DIR__ . '/*');
 
 $startAt = false;
 foreach ($logFiles as $log) {
@@ -68,6 +79,9 @@ foreach ($logFiles as $log) {
         $line = fgets($handle);
         if ($lineNo !== false) {
             if ($lineCount < $lineNo) {
+                unset($line);
+                $lineCount++;
+                // echo "\t\tSkipping: {$lineCount} (>> {$lineNo})\n";
                 continue;
             }
             if ($lineCount == $lineNo) {
@@ -75,12 +89,12 @@ foreach ($logFiles as $log) {
             }
         }
 
-        $doc = PEAR_LogfileAnalysis::parseLine($line);
+        $doc = LogfileAnalysis::parseLine($line);
         if ($doc === false) {
             $lineCount++;
             continue;
         }
-        PEAR_LogfileAnalysis::sendToCouchDB($doc, $prettyLog, $lineCount);
+        LogfileAnalysis::sendToCouchDB($doc, $prettyLog, $lineCount);
         // usleep(500000);
 
         unset($line);
