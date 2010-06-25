@@ -1,6 +1,10 @@
 <?php
 /**
- * 
+ * @category System
+ * @package  PEAR_LogfileAnalysis
+ * @author   Till Klampaeckel <till@php.net>
+ * @license
+ * @link     http://github.com/pear/PEAR_LogfileAnalysis
  */
 class PEAR_LogfileAnalysis
 {

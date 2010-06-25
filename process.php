@@ -1,5 +1,12 @@
 #!/usr/bin/env php
 <?php
+/**
+ * @category System
+ * @package  PEAR_LogfileAnalysis
+ * @author   Till Klampaeckel <till@php.net>
+ * @license
+ * @link     http://github.com/pear/PEAR_LogfileAnalysis
+ */
 require_once __DIR__ . '/PEAR/LogfileAnalysis.php';
 
 PEAR_LogfileAnalysis::init(); // pseudo __construct()
