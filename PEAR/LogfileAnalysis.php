@@ -1,18 +1,30 @@
 <?php
 /**
+ * @namespace
+ */
+namespace PEAR;
+
+/**
+ * \PEAR\LogfileAnalysis
+ *
  * @category System
  * @package  PEAR_LogfileAnalysis
  * @author   Till Klampaeckel <till@php.net>
  * @license
  * @link     http://github.com/pear/PEAR_LogfileAnalysis
  */
-class PEAR_LogfileAnalysis
+class LogfileAnalysis
 {
     /**
      * @var string $base
      */
     protected static $base;
 
+    /**
+     * pseudo __construct()
+     *
+     * @return void
+     */    
     public static function init()
     {
         self::$base = dirname(__DIR__);
@@ -21,6 +33,8 @@ class PEAR_LogfileAnalysis
     /**
      * This is for the initial cleanup. Most of the files would uncompress to
      * 'access_log' which doesn't work.
+     *
+     * @return void
      */
     public static function organize()
     {
@@ -168,6 +182,14 @@ class PEAR_LogfileAnalysis
         return false;
     }
 
+    /**
+     * Parse the weird date string from the access_log into something usable we can
+     * work with!
+     *
+     * @param string $timeStr E.g. 1/Mar/2009 23:59:20 +0000
+     *
+     * @return array An associative array with month, day, year, hour, min
+     */
     protected static function parseTime($timeStr)
     {
         $timeStr = substr($timeStr, 1, -1);
@@ -191,13 +213,15 @@ class PEAR_LogfileAnalysis
     }
 
     /**
-     * Send data to CouchDB.
+     * Send data to CouchDB. This function dies on HTTP error and also if no
+     * config.ini is found.
      *
      * @param array  $data  The object/document.
      * @param string $file  The filename of the log currently being crunched.
      * @param int    $count Which line are we at?
      *
      * @return void
+     * @uses   \HTTP_Request2
      */
     public static function sendToCouchDb(array $data, $file, $count)
     {
@@ -214,9 +238,9 @@ class PEAR_LogfileAnalysis
         if ($req === null) {
             require_once 'HTTP/Request2.php';
 
-            $req = new HTTP_Request2;
+            $req = new \HTTP_Request2;
             $req->setAuth($config['couchdb']['user'], $config['couchdb']['pass']);
-            $req->setMethod(HTTP_Request2::METHOD_PUT);
+            $req->setMethod(\HTTP_Request2::METHOD_PUT);
         }
 
         $obj = (object) $data;
