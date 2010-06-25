@@ -12,6 +12,14 @@ if ($start !== null) {
     echo "Resuming!\n\n";
 }
 
+$lineNo = false;
+if (isset($argv[2])) {
+    $lineNo = (int) $argv[2];
+    if (empty($lineNo)) {
+        $lineNo = false;
+    }
+}
+
 $logFiles = PEAR_LogfileAnalysis::globr(__DIR__ . '/*');
 
 $startAt = false;
@@ -46,6 +54,14 @@ foreach ($logFiles as $log) {
     $lineCount = 1;
     while (!feof($handle)) {
         $line = fgets($handle);
+        if ($lineNo !== false) {
+            if ($lineCount < $lineNo) {
+                continue;
+            }
+            if ($lineCount == $lineNo) {
+                $lineNo = false; // start crunching
+            }
+        }
 
         $doc = PEAR_LogfileAnalysis::parseLine($line);
         if ($doc === false) {
