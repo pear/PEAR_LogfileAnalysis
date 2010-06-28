@@ -249,8 +249,9 @@ class LogfileAnalysis
             echo "\tBulk document request (file: {$file}, line: {$count}), ";
             echo "Response: " . $resp->getStatus();
 
-            if ($resp->getStatus() == 201) {
-                echo " [error] - " . $resp->getBody();
+            if ($resp->getStatus() != 201) {
+                echo " [error] - " . json_decode($resp->getBody());
+                echo "\n\n\n";
             }
 
             echo "\n";
