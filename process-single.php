@@ -53,7 +53,10 @@ if (!$handle) {
     exit(1);
 }
 
-$lineCount = 1;
+$lineCount  = 1;
+$bulk       = new \stdClass;
+$bulk->docs = array();
+
 while (!feof($handle)) {
     $line = fgets($handle);
     if ($lineNo !== false) {
@@ -73,10 +76,21 @@ while (!feof($handle)) {
         $lineCount++;
         continue;
     }
-    LogfileAnalysis::sendToCouchDB($doc, $prettyLog, $lineCount);
+
+    $doc['_id'] = md5($doc['line']);
+
+    $bulk->docs[] = $doc;
+
+    // LogfileAnalysis::sendToCouchDB($doc, $prettyLog, $lineCount);
 
     unset($line);
     unset($doc);
+
+    if (($lineCount%50) == 0) {
+
+        // send the bulk request
+        LogfileAnalysis::sendBulkRequest($bulk, $prettyLog, $lineCount);
+    }
 
     $lineCount++;
 }
