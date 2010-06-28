@@ -213,6 +213,60 @@ class LogfileAnalysis
     }
 
     /**
+     * Bulk docs request.
+     *
+     * @param stdClass $bulkDocs An object with property 'docs'. 'docs' is an array stacked.
+     * @param string   $file     For debug out, the filename currently being crunched.
+     * @param int      $count    The current line of said filename.
+     *
+     * @return void
+     */
+    public function sendBulkRequest(\stdClass $bulkDocs, $file, $count)
+    {
+        static $config;
+        if ($config === null) {
+            $config = parse_ini_file(self::$base . '/config.ini', true);
+            if ($config === false) {
+                echo "Couldn't read config.ini.";
+                exit(1);
+            }
+        }
+        static $req;
+        if ($req === null) {
+            require_once 'HTTP/Request2.php';
+
+            $req = new \HTTP_Request2;
+            $req->setAuth($config['couchdb']['user'], $config['couchdb']['pass']);
+            $req->setMethod(\HTTP_Request2::METHOD_POST);
+        }
+
+        try {
+            $req->setUrl($config['couchdb']['host'] . "/_bulk_docs");
+            $req->setBody(json_encode($bulkDocs));
+
+            $resp = $req->send();
+
+            echo "\tBulk document request (file: {$file}, line: {$count}), ";
+            echo "Response: " . $resp->getStatus();
+
+            if ($resp->getStatus() == 201) {
+                echo " [error] - " $resp->getBody();
+            }
+
+            echo "\n";
+
+            unset($resp);
+            unset($bulkDocs);
+            unset($data);
+            unset($id);
+
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            exit(1);
+        }
+    }
+
+    /**
      * Send data to CouchDB. This function dies on HTTP error and also if no
      * config.ini is found.
      *
