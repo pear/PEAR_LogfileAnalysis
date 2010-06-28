@@ -44,11 +44,10 @@ if (isset($argv[2])) {
     }
 }
 
-$logFiles = LogfileAnalysis::globr(__DIR__ . '/*');
+$prettyLog = basename($start);
+echo "Currently crunching: {$prettyLog}\n";
 
-    echo "Currently crunching: {$prettyLog}\n";
-
-$handle = @fopen($log, 'r');
+$handle = @fopen($start, 'r');
 if (!$handle) {
     echo "Could not open {$prettyLog}\n";
     exit(1);
