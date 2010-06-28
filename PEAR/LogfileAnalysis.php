@@ -250,7 +250,7 @@ class LogfileAnalysis
             echo "Response: " . $resp->getStatus();
 
             if ($resp->getStatus() == 201) {
-                echo " [error] - " $resp->getBody();
+                echo " [error] - " . $resp->getBody();
             }
 
             echo "\n";
